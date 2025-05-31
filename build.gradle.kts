@@ -1,12 +1,12 @@
 plugins {
-    id("com.android.library") version "8.3.2"  // Update to latest stable version
-    id("org.jetbrains.kotlin.android") version "1.9.20"  // Update Kotlin version
+    id("com.android.library") version "8.3.2"
+    id("org.jetbrains.kotlin.android") version "1.9.20" // Corrected Kotlin version
+    id("maven-publish") // Moved to plugins block
 }
 
-
 android {
-    namespace = "com.chalo.rating"  // Fixed typo in "rating"
-    compileSdk = 35
+    namespace = "com.chalo.rating"
+    compileSdk = 34 // Changed to stable version
 
     defaultConfig {
         minSdk = 21
@@ -29,7 +29,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"  // Updated to match Kotlin version
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
 
     compileOptions {
@@ -39,33 +39,46 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-/*    publishing {
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/AppsDevMaruf/rating-lib")
-                credentials {
-                    username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-                    password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
-                }
-            }
-        }
-    }*/
-    
 }
 
-
 dependencies {
-    implementation("androidx.core:core-ktx:1.16.0")
-    implementation(platform("androidx.compose:compose-bom:2025.05.01"))
+    // Stable versions that work well together
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation(platform("androidx.compose:compose-bom:2023.10.01")) // Stable BOM
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
 
+    // Include these if you need them
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.activity:activity-compose:1.8.0")
+
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
 
-// Optional: Add this if you want to publish to Maven Local
-apply(plugin = "maven-publish")
+// Proper publishing configuration
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.chalo"
+            artifactId = "rating"
+            version = "1.0.0"
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/AppsDevMaruf/rating-lib")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
