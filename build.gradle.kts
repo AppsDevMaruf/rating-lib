@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.chalo.rating"  // Fixed typo in "rating"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 21
@@ -39,7 +39,7 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    publishing {
+/*    publishing {
         repositories {
             maven {
                 name = "GitHubPackages"
@@ -50,7 +50,7 @@ android {
                 }
             }
         }
-    }
+    }*/
     
 }
 
