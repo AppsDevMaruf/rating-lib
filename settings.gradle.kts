@@ -10,6 +10,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven(url = "https://jitpack.io") // ✅ Required for JitPack
     }
 }
 rootProject.name = "rating"
